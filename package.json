@@ -1,0 +1,19 @@
+{
+  "name": "teste-lia",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "RFs (Requisitos funcionais)",
+  "main": "teste.js",
+  "scripts": {
+    "test": "vitest",
+    "start": "node search.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@rocketseat/eslint-config": "^2.1.0",
+    "eslint": "^8.52.0",
+    "vitest": "^0.34.6"
+  }
+}
