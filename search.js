@@ -43,11 +43,6 @@ export const courses = {
   },
 }
 
-const courseInputName = {
-  spanish: 'espanhol',
-  english: 'ingles',
-}
-
 const spanish = {
   beginnerMorningSpanish: courses.espanhol.iniciante.manha,
   beginnerNigthSpanish: courses.espanhol.iniciante.noite,
@@ -59,8 +54,6 @@ const english = {
 }
 
 export function search(courses, filters) {
-  console.log(filters)
-
   if (!filters.length) {
     const allCourses = spanish.beginnerMorningSpanish.concat(
       spanish.beginnerNigthSpanish,
@@ -70,25 +63,52 @@ export function search(courses, filters) {
     return allCourses
   }
 
-  const spanishInput = filters.includes(courseInputName.spanish)
-  const englishInput = filters.includes(courseInputName.english)
+  const courseName = filters[0]
+  const courseLevel = filters[1]
+  const courseTurn = filters[2]
+  const keyNames = Object.entries(courses)
+  console.log(keyNames)
 
-  if (!spanishInput && !englishInput) {
-    console.log('entrou')
-    throw new Error('curso não existe!')
-  }
-
-  if (spanishInput) {
-    return spanish.beginnerMorningSpanish.concat(
-      spanish.beginnerNigthSpanish,
-      spanish.advancedMorningSpanish,
+  if (courseName) {
+    const gettingTheTypedCourse = keyNames.filter(
+      (keyName) => keyName[0] === courseName,
     )
-  }
 
-  if (englishInput) {
-    return english.advancedMorningEnglish
+    const gettingCurseSelected = gettingTheTypedCourse.map((index) => {
+      return index[1]
+    })
+
+    if (courseLevel) {
+      const gettingLevelCourses = Object.keys(gettingCurseSelected[0])
+
+      const courseLevelSelected = gettingLevelCourses.find(
+        (levelCourse) => levelCourse === courseLevel,
+      )
+
+      const levelSelected = gettingCurseSelected[0][courseLevelSelected]
+
+      const idsCourseWithLevel = Object.values(levelSelected)
+
+      const arraysIds = idsCourseWithLevel.map((arrayId) => arrayId)
+
+      const idsReturns = arraysIds[0].concat(arraysIds[1])
+
+      if (courseTurn) {
+        const gettingTurnCourses = Object.keys(levelSelected)
+
+        const courseTurnSelected = gettingTurnCourses.find(
+          (turnCourse) => turnCourse === courseTurn,
+        )
+
+        const turnSelected = levelSelected[courseTurnSelected]
+
+        return turnSelected
+      }
+
+      return idsReturns
+    }
   }
 }
 
-search(courses, [])
+search(courses, ['espanhol'])
 // search(courses, ['espanhol'])

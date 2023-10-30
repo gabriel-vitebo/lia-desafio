@@ -29,7 +29,7 @@ test('Cenário onde passa apenas curso ingles, retorna todos os objetos daquele 
   expect(search(courses, ['ingles'])).toStrictEqual([{ id: 11 }, { id: 21 }])
 })
 
-test.only('Cenário onde o curso não existe, retorna mensagem de erro', () => {
+test('Cenário onde o curso não existe, retorna mensagem de erro', () => {
   expect(() => search(courses, ['coreano'])).toThrowError(
     new Error('curso não existe!'),
   )
@@ -49,4 +49,18 @@ test('Cenário onde passa curso + nível + turno, retorna todos os objetos daque
     { id: 1 },
     { id: 2 },
   ])
+})
+
+test('Deve saber filtrar com qualquer lista de cursos que siga o mesmo padrão', () => {
+  const newCourses = {
+    ...courses,
+    portugues: {
+      intermediario: {
+        tarde: [{ id: 22 }, { id: 23 }],
+      },
+    },
+  }
+  expect(
+    search(newCourses, ['portugues', 'intermediario', 'tarde']),
+  ).toStrictEqual([{ id: 22 }, { id: 23 }])
 })
