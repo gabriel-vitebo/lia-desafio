@@ -43,49 +43,62 @@ export const courses = {
   },
 }
 
-const spanish = {
-  beginnerMorningSpanish: courses.espanhol.iniciante.manha,
-  beginnerNigthSpanish: courses.espanhol.iniciante.noite,
-  advancedMorningSpanish: courses.espanhol.avancado.manha,
-}
-
-const english = {
-  advancedMorningEnglish: courses.ingles.avancado.manha,
-}
-
 export function search(courses, filters) {
-  if (!filters.length) {
-    const allCourses = spanish.beginnerMorningSpanish.concat(
-      spanish.beginnerNigthSpanish,
-      spanish.advancedMorningSpanish,
-      english.advancedMorningEnglish,
-    )
-    return allCourses
+  if (filters.length === 0) {
+    // criando um for para pegar todos os IDs
+    const allCourseIDs = []
+
+    for (const courseKey in courses) {
+      for (const levelKey in courses[courseKey]) {
+        for (const turnKey in courses[courseKey][levelKey]) {
+          allCourseIDs.push(...courses[courseKey][levelKey][turnKey])
+        }
+      }
+    }
+
+    return allCourseIDs
   }
 
   const courseName = filters[0]
   const courseLevel = filters[1]
   const courseTurn = filters[2]
   const keyNames = Object.entries(courses)
-  console.log(keyNames)
 
-  if (courseName) {
-    const gettingTheTypedCourse = keyNames.filter(
-      (keyName) => keyName[0] === courseName,
-    )
+  const gettingTheTypedCourse = keyNames.filter(
+    (keyName) => keyName[0] === courseName,
+  )
 
-    const gettingCurseSelected = gettingTheTypedCourse.map((index) => {
+  const gettingCurseStringSelected = gettingTheTypedCourse.map((index) => {
+    return index[0]
+  })
+
+  const doesThisCourseExist = gettingCurseStringSelected.find(
+    (name) => name === courseName,
+  )
+
+  if (!doesThisCourseExist) {
+    throw new Error('Esse curso não existe!')
+  }
+
+  if (doesThisCourseExist) {
+    const gettingCurseObjectSelected = gettingTheTypedCourse.map((index) => {
       return index[1]
     })
 
     if (courseLevel) {
-      const gettingLevelCourses = Object.keys(gettingCurseSelected[0])
+      const gettingLevelCourses = Object.keys(gettingCurseObjectSelected[0])
 
       const courseLevelSelected = gettingLevelCourses.find(
         (levelCourse) => levelCourse === courseLevel,
       )
 
-      const levelSelected = gettingCurseSelected[0][courseLevelSelected]
+      if (!courseLevelSelected) {
+        throw new Error(
+          `desculpe, não há esse nível disponível para o curso ${gettingCurseStringSelected}`,
+        )
+      }
+
+      const levelSelected = gettingCurseObjectSelected[0][courseLevelSelected]
 
       const idsCourseWithLevel = Object.values(levelSelected)
 
@@ -100,6 +113,12 @@ export function search(courses, filters) {
           (turnCourse) => turnCourse === courseTurn,
         )
 
+        if (!courseTurnSelected) {
+          throw new Error(
+            `desculpe, não há esse turno disponível para o curso ${gettingCurseStringSelected}`,
+          )
+        }
+
         const turnSelected = levelSelected[courseTurnSelected]
 
         return turnSelected
@@ -107,6 +126,20 @@ export function search(courses, filters) {
 
       return idsReturns
     }
+
+    // criando um for para pegar todos os IDs relacionado ao curso, caso o usuário não passe o nível
+    const matchingCourses = []
+
+    for (const courseKey in courses) {
+      if (courseKey === courseName) {
+        for (const levelKey in courses[courseKey]) {
+          for (const turnKey in courses[courseKey][levelKey]) {
+            matchingCourses.push(...courses[courseKey][levelKey][turnKey])
+          }
+        }
+      }
+    }
+    return matchingCourses
   }
 }
 

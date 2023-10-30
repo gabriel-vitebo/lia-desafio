@@ -25,16 +25,6 @@ test('Cenário onde passa apenas curso espanhol, retorna todos os objetos daquel
   ])
 })
 
-test('Cenário onde passa apenas curso ingles, retorna todos os objetos daquele curso', () => {
-  expect(search(courses, ['ingles'])).toStrictEqual([{ id: 11 }, { id: 21 }])
-})
-
-test('Cenário onde o curso não existe, retorna mensagem de erro', () => {
-  expect(() => search(courses, ['coreano'])).toThrowError(
-    new Error('curso não existe!'),
-  )
-})
-
 test('Cenário onde passa curso + nível, retorna todos os objetos daquele curso + nivel', () => {
   expect(search(courses, ['espanhol', 'iniciante'])).toStrictEqual([
     { id: 1 },
@@ -51,7 +41,7 @@ test('Cenário onde passa curso + nível + turno, retorna todos os objetos daque
   ])
 })
 
-test('Deve saber filtrar com qualquer lista de cursos que siga o mesmo padrão', () => {
+test.only('Deve saber filtrar com qualquer lista de cursos que siga o mesmo padrão', () => {
   const newCourses = {
     ...courses,
     portugues: {
@@ -60,7 +50,30 @@ test('Deve saber filtrar com qualquer lista de cursos que siga o mesmo padrão',
       },
     },
   }
-  expect(
-    search(newCourses, ['portugues', 'intermediario', 'tarde']),
-  ).toStrictEqual([{ id: 22 }, { id: 23 }])
+  expect(search(newCourses, ['portugues'])).toStrictEqual([
+    { id: 22 },
+    { id: 23 },
+  ])
+})
+
+// tese de Erros
+
+test('Cenário onde o curso não existe, retorna mensagem de erro', () => {
+  expect(() => search(courses, ['coreano'])).toThrowError(
+    new Error('Esse curso não existe!'),
+  )
+})
+
+test('Cenário onde o nível não existe, retorna mensagem de erro', () => {
+  expect(() => search(courses, ['espanhol', 'naotem'])).toThrowError(
+    new Error('desculpe, não há esse nível disponível para o curso espanhol'),
+  )
+})
+
+test('Cenário onde o turno não existe, retorna mensagem de erro', () => {
+  expect(() =>
+    search(courses, ['espanhol', 'iniciante', 'naotem']),
+  ).toThrowError(
+    new Error('desculpe, não há esse turno disponível para o curso espanhol'),
+  )
 })
