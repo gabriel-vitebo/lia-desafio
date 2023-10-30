@@ -14,6 +14,13 @@ test('Quando o filtro for vazio, retorne todos os cursos', () => {
   ])
 })
 
+test('Quando o nome vir com letra maiúscula ou com acentos, deixei no padrão', () => {
+  expect(search(courses, ['InGlÊs', 'AvAnÇaDo', 'MaNhÃ'])).toStrictEqual([
+    { id: 11 },
+    { id: 21 },
+  ])
+})
+
 test('Cenário onde passa apenas curso espanhol, retorna todos os objetos daquele curso', () => {
   expect(search(courses, ['espanhol'])).toStrictEqual([
     { id: 1 },
@@ -41,7 +48,7 @@ test('Cenário onde passa curso + nível + turno, retorna todos os objetos daque
   ])
 })
 
-test.only('Deve saber filtrar com qualquer lista de cursos que siga o mesmo padrão', () => {
+test('Deve saber filtrar com qualquer lista de cursos que siga o mesmo padrão', () => {
   const newCourses = {
     ...courses,
     portugues: {

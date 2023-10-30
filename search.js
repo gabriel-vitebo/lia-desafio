@@ -55,7 +55,7 @@ export function search(courses, filters) {
         }
       }
     }
-
+    console.log(allCourseIDs)
     return allCourseIDs
   }
 
@@ -63,9 +63,33 @@ export function search(courses, filters) {
   const courseLevel = filters[1]
   const courseTurn = filters[2]
   const keyNames = Object.entries(courses)
+  let courseNameDefault = ''
+  let courseLevelDefault = ''
+  let courseTurnDefault = ''
+
+  if (courseName) {
+    const courseNameToLowerCase = courseName.toLowerCase()
+    courseNameDefault = courseNameToLowerCase
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+  }
+
+  if (courseLevel) {
+    const courseLevelToLowerCase = courseLevel.toLowerCase()
+    courseLevelDefault = courseLevelToLowerCase
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+  }
+
+  if (courseTurn) {
+    const courseTurnToLowerCase = courseTurn.toLowerCase()
+    courseTurnDefault = courseTurnToLowerCase
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+  }
 
   const gettingTheTypedCourse = keyNames.filter(
-    (keyName) => keyName[0] === courseName,
+    (keyName) => keyName[0] === courseNameDefault,
   )
 
   const gettingCurseStringSelected = gettingTheTypedCourse.map((index) => {
@@ -73,7 +97,7 @@ export function search(courses, filters) {
   })
 
   const doesThisCourseExist = gettingCurseStringSelected.find(
-    (name) => name === courseName,
+    (name) => name === courseNameDefault,
   )
 
   if (!doesThisCourseExist) {
@@ -85,11 +109,11 @@ export function search(courses, filters) {
       return index[1]
     })
 
-    if (courseLevel) {
+    if (courseLevelDefault) {
       const gettingLevelCourses = Object.keys(gettingCurseObjectSelected[0])
 
       const courseLevelSelected = gettingLevelCourses.find(
-        (levelCourse) => levelCourse === courseLevel,
+        (levelCourse) => levelCourse === courseLevelDefault,
       )
 
       if (!courseLevelSelected) {
@@ -106,11 +130,11 @@ export function search(courses, filters) {
 
       const idsReturns = arraysIds[0].concat(arraysIds[1])
 
-      if (courseTurn) {
+      if (courseTurnDefault) {
         const gettingTurnCourses = Object.keys(levelSelected)
 
         const courseTurnSelected = gettingTurnCourses.find(
-          (turnCourse) => turnCourse === courseTurn,
+          (turnCourse) => turnCourse === courseTurnDefault,
         )
 
         if (!courseTurnSelected) {
@@ -121,9 +145,11 @@ export function search(courses, filters) {
 
         const turnSelected = levelSelected[courseTurnSelected]
 
+        console.log(turnSelected)
         return turnSelected
       }
 
+      console.log(idsReturns)
       return idsReturns
     }
 
@@ -139,9 +165,12 @@ export function search(courses, filters) {
         }
       }
     }
+    console.log(matchingCourses)
     return matchingCourses
   }
 }
 
-search(courses, ['espanhol'])
+search(courses, [])
 // search(courses, ['espanhol'])
+// search(courses, ['espanhol', 'iniciante'])
+// search(courses, ['espanhol', 'iniciante', 'manha'])
